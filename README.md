@@ -59,8 +59,8 @@ public interface Problem {
 ```
 // 후보해로 선정된 a와 b를 ax + b 식에 대입해 에러율을 구하는 함수
     private double errorRate(double candidatesA, double candidatesB, double[] sortingAlgorithm, Problem p){
-        int sort_length = sortingAlgorithm.length;
-        double errorSum = 0;
+        int sort_length = sortingAlgorithm.length; // 입력된 정렬 알고리즘의 배열 길이
+        double errorSum = 0; // 에러 값을 더할 변수
 
         for(int i = 0; i < sort_length; i++) {
             double result = p.fit(i, candidatesA, candidatesB);
