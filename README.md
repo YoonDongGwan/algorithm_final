@@ -41,13 +41,13 @@
 
 
 ## 구현(JAVA)
-먼저 데이터 집합을 실수형 배열로 옮겨야 하는데, 여기선 버블 정렬을 선택하였다.
+#### 먼저 데이터 집합을 실수형 배열로 옮겨야 하는데, 여기선 버블 정렬을 선택하였다.
 ```
 double[] bubble = {0, -8.0, -6.3, -6.1, -5.8, -5.0, -2.8, -0.8, 1.3, 2.6, 3.1, 3.3, 4.2, 5.7, 7.6, 10.2, 12.7, 14.5, 16.6, 18.6, 20.6};
 ```
 
 ---
-그 후 ax + b 형태의 방정식을 나타내기 위해, Problem 인터페이스를 생성하였다.
+#### 그 후 ax + b 형태의 방정식을 나타내기 위해, Problem 인터페이스를 생성하였다.
 ```
 public interface Problem {
     double fit(double x, double a, double b);
@@ -55,7 +55,7 @@ public interface Problem {
 ```
 ---
 
-선택한 후보해 a와 b를 대입해 에러율을 구하는 함수를 구현하였다.
+#### 선택한 후보해 a와 b를 대입해 에러율을 구하는 함수를 구현하였다.
 ```
 // 후보해로 선정된 a와 b를 ax + b 식에 대입해 에러율을 구하는 함수
     private double errorRate(double candidatesA, double candidatesB, double[] sortingAlgorithm, Problem p){
@@ -71,4 +71,51 @@ public interface Problem {
     }
 ```
 
+#### 선택 연산을 진행할 select 함수를 구현하였다.
+```
+private void select(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
+        int n = candidatesA.length; // 후보해 집합의 길이
+        double[] errorRate = new double[n]; // 에러율을 담을 배열
+        Random random = new Random();
+        double errorRateSum = 0;
+        int[] probability = new int[n];
+
+        for(int i = 0; i < n; i++){
+            System.out.println("a : "+candidatesA[i]+" b : "+candidatesB[i]);
+
+            errorRate[i] = errorRate(candidatesA[i], candidatesB[i], sortingAlgorithm, p); // 선택된 후보해 a, b와 그에 따른 에러율
+            System.out.println("Error rate : "+errorRate[i]);
+
+            errorRateSum += errorRate[i]; // 각 에러율에 비율의 따라 가중치를 두어 선택하기 위해, 에러율을 모두 더함.
+        }
+
+
+        probability[0] = (int)((errorRate[0] / errorRateSum) * 100);
+        for(int i = 1; i < n; i++){
+            probability[i] = (int)((errorRate[i] / errorRateSum) * 100) + probability[i-1]; // 에러율에 따라 확률 분포를 나누었다.
+        }
+
+        // 에러율이 작은 순서대로 선택 확률이 높아야 하기 때문에, 여기서 probability는 선택되지 않을 확률로 계산하였다.
+        for(int i = 0; i < n; i++){
+            HashSet<Integer> set = new HashSet<>();
+            while(set.size() < 3) { // 해쉬셋에 선택하지 않을 후보해 3개를 담는다.
+                int x = random.nextInt(probability[n - 1]); // 누적 확률에 따라 probability[n-1]은 100에 근접한 수가 되었을 것이다. 따라서 랜덤 변수의 최댓값을 그에 맞춰 설정해준다. 
+                for(int j = 0; j < n; j++){
+                    if(x <= probability[j]){    // 랜덤 변수의 값이 probability[j]보다 크면 다음 인덱스로, 작거나 같으면 현재 인덱스의 값을 해쉬셋에 담는다. 
+                        set.add(j);
+                        break;
+                    }
+                }
+            }
+
+            for(int j = 0; j < set.size(); j++){ // 해쉬셋에 담기지 않은 1개의 후보해가 선택될 것이다.
+                if(!set.contains(j)){
+                    candidatesA[i] = candidatesA[j];
+                    candidatesB[i] = candidatesB[j];
+                }
+            }
+        } // 이 과정을 총 n번 반복하개 된다.
+
+    }
+```
 
