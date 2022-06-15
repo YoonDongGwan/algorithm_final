@@ -1,4 +1,4 @@
-import java.util.Random;
+import java.util.*;
 
 public class GeneticAlgorithm {
     public double solve(int nCandidates, double[] sortingAlgorithm, Problem p){
@@ -12,7 +12,7 @@ public class GeneticAlgorithm {
 
         for(int i = 0; i < nCandidates; i++){
             candidatesA[i] = random.nextInt(30); // 랜덤 4개
-            candidatesB[i] = random.nextInt(30);
+            candidatesB[i] = random.nextInt(30) - 15;
         }
         for(int i = 0; i < candidatesA.length; i++){
             System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
@@ -22,10 +22,10 @@ public class GeneticAlgorithm {
               for(int i = 0; i < candidatesA.length; i++){
                   System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
               }
-
-
-
-//            candidatesA = crossover(candidatesA, p);
+              crossover(candidatesA, candidatesB, sortingAlgorithm, p);
+        for(int i = 0; i < candidatesA.length; i++){
+            System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
+        }
 //            candidatesA = mutate(candidatesA);
 //        }
 
@@ -80,51 +80,84 @@ public class GeneticAlgorithm {
             System.out.println("probability "+ (i+1) + " : "+ probability[i]);
         }
 
-//        for (int i=5; i<res.length; i++) {
-//            System.out.println("res["+i+"] : "+res[i]);
-//            System.out.println("error["+i+"] : "+error[i]);
-//        }
 
+        for(int i = 0; i < n; i++){
+            HashSet<Integer> set = new HashSet<>();
+            while(set.size() < 3) {
+                int x = random.nextInt(probability[n - 1]);
+                for(int j = 0; j < n; j++){
+                    if(x <= probability[j]){
+                        set.add(j);
+                        break;
+                    }
+                }
+            }
 
-
-        for (int i = 0; i < n; i++) {
-            int x = random.nextInt(probability[n-1]);
-
-            for(int j = 0; j < n; j++){
-                if(x <= probability[j]){
+            for(int j = 0; j < set.size(); j++){
+                if(!set.contains(j)){
                     candidatesA[i] = candidatesA[j];
                     candidatesB[i] = candidatesB[j];
-                    break;
                 }
             }
         }
+
     }
 
 
 
-//    private double[] crossover(double[] candidates, Problem p) {
-//
-//        int n = candidates.length;
-//
-//        for(int i = 0; i < n; i += 2){
-//            double x1 = candidates[i];
-//            double x2 = candidates[i+1];
-//            double y1 = p.fit(x1);
-//            double y2 = p.fit(x2);
-//
-//            double in = (y2-y1) / (x2-x1);
-//            if(in > 0) {
-//                candidates[i] += 1;
-//                candidates[i+1] += 1;
-//            }
-//            else if(in < 0) {
-//                candidates[i] -= 1;
-//                candidates[i+1] -= 1;
-//            }
-//        }
-//
-//        return candidates;
-//    }
+    private void crossover(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
+
+        int n = candidatesA.length;
+
+        for(int i = 0; i < n; i += 2){
+            double a1 = candidatesA[i];
+            double a2 = candidatesA[i+1];
+            double b1 = candidatesB[i];
+            double b2 = candidatesB[i+1];
+
+            double errorRate1 = errorRate(a1, b1, sortingAlgorithm, p);
+            double errorRate2 = errorRate(a2, b2, sortingAlgorithm, p);
+
+
+            if(errorRate1 > errorRate2) {
+                if(a1 > a2){ // 1/ 10
+                    candidatesA[i] = (int)((a1 + a2) / 2) - 1;
+                    candidatesA[i+1] = (int)((a1 + a2) / 2);
+                }
+                else{ // 10 1
+                    candidatesA[i] = (int)((a1 + a2) / 2) + 1;
+                    candidatesA[i+1] = (int)((a1 + a2) / 2);
+                }
+                if(b1 > b2) {
+                    candidatesB[i] = (int)((b1 + b2) / 2) - 1;
+                    candidatesB[i+1] = (int)((b1 + b2) / 2);
+                }
+                else{
+                    candidatesB[i] = (int)((b1 + b2) / 2) + 1;
+                    candidatesB[i+1] = (int)((b1 + b2) / 2);
+                }
+            }
+            else{
+                if(a1 > a2){ // 1/ 10
+                    candidatesA[i] = (int)((a1 + a2) / 2) + 1;
+                    candidatesA[i+1] = (int)((a1 + a2) / 2);
+                }
+                else{ // 10 1
+                    candidatesA[i] = (a1 + a2) / 2 - 1;
+                    candidatesA[i+1] = (int)((a1 + a2) / 2);
+                }
+                if(b1 > b2) {
+                    candidatesB[i] = (b1 + b2) / 2 + 1;
+                    candidatesB[i+1] = (int)((b1 + b2) / 2);
+                }
+                else{
+                    candidatesB[i] = (b1 + b2) / 2 - 1;
+                    candidatesB[i+1] = (int)((b1 + b2) / 2);
+                }
+            }
+        }
+
+    }
 //
 //
 //
@@ -141,7 +174,18 @@ public class GeneticAlgorithm {
 //        }
 //        return candidates;
 //    }
+    private double errorRate(double candidatesA, double candidatesB, double[] sortingAlgorithm, Problem p){
+        int sort_length = sortingAlgorithm.length;
+        double[] res = new double[sort_length];
+        double errorSum = 0;
 
+        for(int i = 5; i < sort_length; i++) {
+            res[i] = p.fit(i, candidatesA, candidatesB);
+            errorSum += Math.abs(sortingAlgorithm[i] - res[i]);
+        }
+
+        return errorSum / 15;
+    }
 
 
 }
