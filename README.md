@@ -38,3 +38,37 @@
 
 세 번째 돌연변이 연산에서는, 교차 연산을 통해 탄생한 새로운 후보해를 아주 작은 확률이 일부 변형시키는 연산이다.   
 돌연변이 연산은 후보해의 적합도를 오히려 낮추는 경우도 있는데, 다음 세대에 돌연변이가 이루어진 후보해와 다른 후보해의 교차 연산 후 탄생한 후보해가 우수한 후보해임을 기대하는 것에 의의를 두는 연산이다.
+
+
+## 구현(JAVA)
+먼저 데이터 집합을 실수형 배열로 옮겨야 하는데, 여기선 버블 정렬을 선택하였다.
+```
+double[] bubble = {0, -8.0, -6.3, -6.1, -5.8, -5.0, -2.8, -0.8, 1.3, 2.6, 3.1, 3.3, 4.2, 5.7, 7.6, 10.2, 12.7, 14.5, 16.6, 18.6, 20.6};
+```
+
+---
+그 후 ax + b 형태의 방정식을 나타내기 위해, Problem 인터페이스를 생성하였다.
+```
+public interface Problem {
+    double fit(double x, double a, double b);
+}
+```
+---
+
+선택한 후보해 a와 b를 대입해 에러율을 구하는 함수를 구현하였다.
+```
+// 후보해로 선정된 a와 b를 ax + b 식에 대입해 에러율을 구하는 함수
+    private double errorRate(double candidatesA, double candidatesB, double[] sortingAlgorithm, Problem p){
+        int sort_length = sortingAlgorithm.length;
+        double errorSum = 0;
+
+        for(int i = 0; i < sort_length; i++) {
+            double result = p.fit(i, candidatesA, candidatesB);
+            errorSum += Math.abs(sortingAlgorithm[i] - result); // 정렬 알고리즘의 i번째 결과와 ax+b의 결과를 서로 빼 절대값 연산을 취하여 에러 값의 합을 산출하였다.
+        }
+
+        return errorSum / sort_length; // 총 더해진 에러 값의 평균을 구하면, 선택된 a, b의 에러율이 나오게 된다.
+    }
+```
+
+
