@@ -17,7 +17,7 @@
 ### 정렬 알고리즘 Log2 그래프
 ![로그2무작위](https://user-images.githubusercontent.com/39906922/173868547-9ea57664-0db0-4914-a79c-bdaeb9fa5dd5.png)
 
-따라서, 이번 과제에 사용할 데이터 집합은 Log2가 적용된 정렬 알고리즘들이다.
+따라서, 이번 과제에 사용할 데이터 집합은 Log2가 적용된 정렬 알고리즘들로 선택하였다.
 
 ## 최적화 알고리즘
 회귀식을 추정할 때, 사용할 알고리즘은 **유전 알고리즘**으로 선택하였다.
@@ -41,13 +41,13 @@
 
 
 ## 구현(JAVA)
-#### 먼저 데이터 집합을 실수형 배열로 옮겨야 하는데, 여기선 버블 정렬을 선택하였다.
+### 먼저 데이터 집합을 실수형 배열로 옮겨야 하는데, 여기선 버블 정렬을 선택하였다.
 ```
 double[] bubble = {0, -8.0, -6.3, -6.1, -5.8, -5.0, -2.8, -0.8, 1.3, 2.6, 3.1, 3.3, 4.2, 5.7, 7.6, 10.2, 12.7, 14.5, 16.6, 18.6, 20.6};
 ```
 
 ---
-#### 그 후 ax + b 형태의 방정식을 나타내기 위해, Problem 인터페이스를 생성하였다.
+### 그 후 ax + b 형태의 방정식을 나타내기 위해, Problem 인터페이스를 생성하였다.
 ```
 public interface Problem {
     double fit(double x, double a, double b);
@@ -55,7 +55,7 @@ public interface Problem {
 ```
 ---
 
-#### 선택한 후보해 a와 b를 대입해 에러율을 구하는 함수를 구현하였다.
+### 선택한 후보해 a와 b를 대입해 에러율을 구하는 함수를 구현하였다.
 ```
 // 후보해로 선정된 a와 b를 ax + b 식에 대입해 에러율을 구하는 함수
     private double errorRate(double candidatesA, double candidatesB, double[] sortingAlgorithm, Problem p){
@@ -71,7 +71,7 @@ public interface Problem {
     }
 ```
 ---
-#### 선택 연산을 진행할 select 함수를 구현하였다.
+### 선택 연산을 진행할 select 함수를 구현하였다.
 ```
 private void select(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
         int n = candidatesA.length; // 후보해 집합의 길이
@@ -128,7 +128,7 @@ private void select(double[] candidatesA, double[] candidatesB, double[] sorting
 
 ---
 
-#### 다음은, 교차 연산을 진행할 crossover 함수이다.
+### 다음은, 교차 연산을 진행할 crossover 함수이다.
 ```
 private void crossover(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
 
@@ -169,7 +169,7 @@ private void crossover(double[] candidatesA, double[] candidatesB, double[] sort
 이 결과, 세대가 거듭될 수록 에러율이 감소하는 결과를 볼 수 있었다.
 
 ---
-#### 다음은, 돌연변이 연산을 수행할 mutate 함수이다.
+### 다음은, 돌연변이 연산을 수행할 mutate 함수이다.
 ```
 private void mutate(double[] candidatesA, double[] candidatesB) {
         for(int i = 0; i < candidatesA.length; i++) {
