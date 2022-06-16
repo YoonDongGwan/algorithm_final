@@ -215,3 +215,6 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
 
 _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
+
+## 결과
+
