@@ -167,3 +167,5 @@ private void crossover(double[] candidatesA, double[] candidatesB, double[] sort
 따라서, a2, b2를 자식 세대에 담고, a1, a2 의 교차 연산 결과, b1, b2 의 교차 연산 결과를 자식 세대로 담아 새로운 후보해를 만들었다.
 
 이 결과, 세대가 거듭될 수록 에러율이 감소하는 결과를 볼 수 있었다.
+
+---
