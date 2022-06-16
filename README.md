@@ -216,5 +216,17 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
 _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
 
-## 결과
+## 결과  
+<img width="285" alt="스크린샷 2022-06-16 오후 4 56 26" src="https://user-images.githubusercontent.com/39906922/174021495-e5bb82d1-80c8-4eab-8d31-e7a9e1efcd8d.png">
+
+10만번의 세대를 거치게 실행하였고 5번을 시행하였다.
+
+그 결과, ax + b 의 방정식에서 a는 주로 1.3 &#126; 1.5 사이의 실수 값을, b는 주로 -9.0 ~ 13.0 사이의 실수 값이 나오게 된다.
+
+이 결과가 과연 최적해에 가까울지 확인하기 위해, 엑셀의 추세선 기능을 이용하였다.
+
+![추세선](https://user-images.githubusercontent.com/39906922/174022396-29dc0bc5-5741-48ce-8ac5-8c216c7b17e0.png)
+
+엑셀에서 도출해낸 회귀식은 y = 1.4843x - 11.266 이며, 이와 완벽하게 같지는 않더라도 최적해에 가까운 해가 도출되었다.
+
 
