@@ -126,7 +126,7 @@ private void select(double[] candidatesA, double[] candidatesB, double[] sorting
 
 이렇게 한다면, 에러율이 가장 낮은 원소가 배열에 끝까지 남아있을 확률이 더 높게 되고, 에러율이 낮을 수록 선택되는 확률이 높아지게 되어 원하는 결과를 얻을 수 있었다.
 
-
+---
 
 #### 다음은, 교차 연산을 진행할 crossover 함수이다.
 ```
