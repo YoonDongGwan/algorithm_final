@@ -210,3 +210,8 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 돌연변이 확률이 높을 때의 마지막 세대 해와 돌연변이 확률이 낮을 때의 마지막 세대의 최적해(또는 최적해에 가까운 해)를 비교해본 결과 낮을 수록 최적해에 더 가까움을 확인할 수 있었다.
 
 따라서, 본 과제에서는 돌연변이 확률을 1% 로 설정하였다.
+![돌연변이확률](https://user-images.githubusercontent.com/39906922/174019186-873c4c6f-7296-4e36-9881-a486d90a83e1.png)  
+<img width="476" alt="스크린샷 2022-06-16 오후 4 46 09" src="https://user-images.githubusercontent.com/39906922/174019485-811cc9cd-966c-4e1f-9c5a-ede583eb3801.png">
+
+
+_돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
