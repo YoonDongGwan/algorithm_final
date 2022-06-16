@@ -169,3 +169,40 @@ private void crossover(double[] candidatesA, double[] candidatesB, double[] sort
 이 결과, 세대가 거듭될 수록 에러율이 감소하는 결과를 볼 수 있었다.
 
 ---
+#### 다음은, 돌연변이 연산을 수행할 mutate 함수이다.
+```
+private void mutate(double[] candidatesA, double[] candidatesB) {
+        for(int i = 0; i < candidatesA.length; i++) {
+            if((int)(Math.random() * 100) < 10) { // 1% 확률로 돌연변이 발생
+                switch((int)(Math.random() * 4)){ // 4가지의 돌연변이 경우
+                    case 0:
+                        candidatesA[i] += 1;    // a : +1
+                        break;
+                    case 1:
+                        if(candidatesA[i] - 1 > 0) { // a : -1
+                            candidatesA[i] -= 1;
+                        }
+                        break;
+                    case 2:
+                        candidatesB[i] += 1;    // b : +1
+                        break;
+                    case 3:
+                        candidatesB[i] -= 1;    // b : -1
+                        break;
+                }
+            }
+        }
+
+    }
+```
+돌연변이 연산에 중요한 점은, 돌연변이가 얼마나 자주 혹은 가끔 생성되는가이다. 
+
+돌연변이 확률이 100% 라면, 모든 후보해에 돌연변이가 일어나게 되어, 임의의 후보해가 탄생하게 된다. 
+
+그렇게 되면, 다음 세대의 후보해가 더 우수한 후보해임을 기대하는 돌연변이 연산의 존재자체의 의의가 사실 없는 셈이다.
+
+돌연변이 확률이 0% 라면, 모든 후보해에 돌연변이 연산이 일어나지 않고, 교차 연산으로 탄생한 후보해 그대로 이어질 것이다.
+
+돌연변이 확률이 높을 때의 최종해와 돌연변이 확률이 낮을 떄의 최종적으로 나온 최적해(또는 최적해에 가까운 해)를 비교해본 결과 낮을 수록 최적해에 더 가까움을 확인할 수 있었다.
+
+따라서, 본 과제에서는 돌연변이 확률을 1% 로 설정하였다.
