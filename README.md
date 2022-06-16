@@ -216,6 +216,41 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
 _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
 
+### 최종적인 solve 함수
+```
+public double[] solve(int nCandidates, double[] sortingAlgorithm, Problem p){
+        int nGenerations = 100000; // 10만번의 세대를 거침
+        double[] candidatesA = new double[nCandidates];
+        double[] candidatesB = new double[nCandidates];
+        Random random = new Random();
+
+        double minimumErrorRate = 0;
+        int minimumIndex = 0;
+
+        for(int i = 0; i < nCandidates; i++){
+            candidatesA[i] = random.nextInt(100); // 랜덤 4개
+            candidatesB[i] = random.nextInt(100) - 50;
+        }
+        for(int i = 0; i < nGenerations; i++){ // 10만번의 select - crossover - mutate 과정을 거치며 세대를 내려간다.
+            select(candidatesA, candidatesB, sortingAlgorithm, p);
+            crossover(candidatesA, candidatesB, sortingAlgorithm, p);
+            mutate(candidatesA, candidatesB);
+
+        }
+
+        for(int i = 0; i < nCandidates; i++){ // 마지막 세대에서 에러율이 가장 낮은 최적해(또는 최적해에 가까운 해)를 선택한다.
+            double errorRate = errorRate(candidatesA[i], candidatesB[i], sortingAlgorithm, p);
+            if(minimumErrorRate < errorRate){
+                minimumErrorRate = errorRate;
+                minimumIndex = i;
+            }
+        }
+        double[] opt = {candidatesA[minimumIndex], candidatesB[minimumIndex]};
+        return opt;
+    }
+```
+
+
 ## 결과  
 <img width="285" alt="스크린샷 2022-06-16 오후 4 56 26" src="https://user-images.githubusercontent.com/39906922/174021495-e5bb82d1-80c8-4eab-8d31-e7a9e1efcd8d.png">
 
