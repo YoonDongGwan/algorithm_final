@@ -168,6 +168,10 @@ private void crossover(double[] candidatesA, double[] candidatesB, double[] sort
 
 이 결과, 세대가 거듭될 수록 에러율이 감소하는 결과를 볼 수 있었다.
 
+<img width="292" alt="스크린샷 2022-06-16 오후 4 17 27" src="https://user-images.githubusercontent.com/39906922/174014312-3e5e7dc4-467d-4393-8903-4509b2056d6f.png">
+
+_5번의 유전 알고리즘 수행 결과 Error rate sum이 점차 감소하는 경향임을 볼 수 있다._
+
 ---
 ### 다음은, 돌연변이 연산을 수행할 mutate 함수이다.
 ```
