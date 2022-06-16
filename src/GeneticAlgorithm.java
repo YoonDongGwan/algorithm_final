@@ -1,8 +1,8 @@
 import java.util.*;
 
 public class GeneticAlgorithm {
-    public double solve(int nCandidates, double[] sortingAlgorithm, Problem p){
-        int nGenerations = 100000;
+    public double[] solve(int nCandidates, double[] sortingAlgorithm, Problem p){
+        int nGenerations = 100000; // 10만번의 세대를 거침
         double[] candidatesA = new double[nCandidates];
         double[] candidatesB = new double[nCandidates];
         Random random = new Random();
@@ -14,29 +14,40 @@ public class GeneticAlgorithm {
             candidatesA[i] = random.nextInt(100); // 랜덤 4개
             candidatesB[i] = random.nextInt(100) - 50;
         }
-        for(int i = 0; i < candidatesA.length; i++){
-            System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
-        }
+//        System.out.println("랜덤으로 선택된 처음 세대의 a, b들");
+//        for(int i = 0; i < candidatesA.length; i++){
+//            System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
+//        }
         for(int i = 0; i < nGenerations; i++){
+//            System.out.println("\n"+(i+1)+"번째 세대");
             select(candidatesA, candidatesB, sortingAlgorithm, p);
             crossover(candidatesA, candidatesB, sortingAlgorithm, p);
             mutate(candidatesA, candidatesB);
+//            if(i%10000 == 0){
+//                double averageErrorRate = 0;
+//                for(int j = 0; j < nCandidates; j++) {
+//                    averageErrorRate += errorRate(candidatesA[j], candidatesB[j], sortingAlgorithm, p);
+//                }
+//                System.out.println("Average Error rate : " + averageErrorRate / nCandidates);
+//            }
 //              for(int i = 0; i < candidatesA.length; i++){
 //                  System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
 //              }
         }
 
-        for(int i = 0; i < nCandidates; i++){
+        for(int i = 0; i < nCandidates; i++){ // 마지막 세대에서 에러율이 가장 낮은 최적해(또는 최적해에 가까운 해)를 선택한다.
             double errorRate = errorRate(candidatesA[i], candidatesB[i], sortingAlgorithm, p);
             if(minimumErrorRate < errorRate){
                 minimumErrorRate = errorRate;
                 minimumIndex = i;
             }
         }
+        System.out.println("유전 알고리즘 결과 : y = "+candidatesA[minimumIndex]+"x "+candidatesB[minimumIndex]);
+        //System.out.println("a : "+candidatesA[minimumIndex]+" b : "+candidatesB[minimumIndex]);
+        //System.out.println("Error rate : " + errorRate(candidatesA[minimumIndex], candidatesB[minimumIndex], sortingAlgorithm, p));
 
-        System.out.println("a : "+candidatesA[minimumIndex]+" b : "+candidatesB[minimumIndex]);
-
-        return candidatesA[minimumIndex];
+        double[] opt = {candidatesA[minimumIndex], candidatesB[minimumIndex]};
+        return opt;
     }
 
     private void select(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
@@ -47,13 +58,14 @@ public class GeneticAlgorithm {
         int[] probability = new int[n];
 
         for(int i = 0; i < n; i++){
-            System.out.println("a : "+candidatesA[i]+" b : "+candidatesB[i]);
+//            System.out.println("a : "+candidatesA[i]+" b : "+candidatesB[i]);
 
             errorRate[i] = errorRate(candidatesA[i], candidatesB[i], sortingAlgorithm, p); // 선택된 후보해 a, b와 그에 따른 에러율
-            System.out.println("Error rate : "+errorRate[i]);
+//            System.out.println("Error rate : "+errorRate[i]);
 
             errorRateSum += errorRate[i]; // 각 에러율에 비율의 따라 가중치를 두어 선택하기 위해, 에러율을 모두 더함.
         }
+//        System.out.println("Error rate sum : " + errorRateSum);
 
 
         probability[0] = (int)((errorRate[0] / errorRateSum) * 100);
@@ -120,21 +132,21 @@ public class GeneticAlgorithm {
 
     private void mutate(double[] candidatesA, double[] candidatesB) {
         for(int i = 0; i < candidatesA.length; i++) {
-            if((int)(Math.random() * 100) < 1) {
-                switch((int)(Math.random() * 4)){
+            if((int)(Math.random() * 100) < 1) { // 1% 확률로 돌연변이 발생
+                switch((int)(Math.random() * 4)){ // 4가지의 돌연변이 경우
                     case 0:
-                        candidatesA[i] += 1;
+                        candidatesA[i] += 1;    // a : +1
                         break;
                     case 1:
-                        if(candidatesA[i] - 1 > 0) {
+                        if(candidatesA[i] - 1 > 0) { // a : -1
                             candidatesA[i] -= 1;
                         }
                         break;
                     case 2:
-                        candidatesB[i] += 1;
+                        candidatesB[i] += 1;    // b : +1
                         break;
                     case 3:
-                        candidatesB[i] -= 1;
+                        candidatesB[i] -= 1;    // b : -1
                         break;
                 }
             }
