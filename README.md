@@ -70,7 +70,7 @@ public interface Problem {
         return errorSum / sort_length; // 총 더해진 에러 값의 평균을 구하면, 선택된 a, b의 에러율이 나오게 된다.
     }
 ```
-
+---
 #### 선택 연산을 진행할 select 함수를 구현하였다.
 ```
 private void select(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
@@ -118,4 +118,39 @@ private void select(double[] candidatesA, double[] candidatesB, double[] sorting
 
     }
 ```
+선택연산을 구현함에 있어, 고민이 되었던 점은 원판의 비율을 어떻게 나눌 것인가였다.그 이유는 에러율이 낲ㅇ
 
+
+
+#### 다음은, 교차 연산을 진행할 crossover 함수이다.
+```
+private void crossover(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
+
+        int n = candidatesA.length;
+
+        for(int i = 0; i < n; i += 2){
+            double a1 = candidatesA[i];
+            double a2 = candidatesA[i+1];
+            double b1 = candidatesB[i];
+            double b2 = candidatesB[i+1];
+            
+            // 배열에서 a, b 원소를 각각 2개씩 뽑아 에러율을 계산하였다.
+            double errorRate1 = errorRate(a1, b1, sortingAlgorithm, p); 
+            double errorRate2 = errorRate(a2, b2, sortingAlgorithm, p);
+
+            // 에러율에 따라 교차 연산의 수행결과를 바꿔주기로 하였다.
+            if(errorRate1 > errorRate2) { // 에러율이 2가 더 낮다는 것은 a2, b2 값이 더 최적해에 가깝다는 의미이다.
+                candidatesA[i] = a2;
+                candidatesA[i+1] = (a1+a2) / 2;
+                candidatesB[i] = b2;
+                candidatesB[i+1] = (b1+b2) / 2;
+            }
+            else{ // errorRate1 <= errorRate2 이 경우 a1, b1 이 더 최적해에 가깝다는 의미이다.
+                candidatesA[i] = a1;
+                candidatesA[i+1] = (a1+a2) / 2;
+                candidatesB[i] = b1;
+                candidatesB[i+1] = (b1+b2) / 2;
+            }
+        }
+    }
+```
