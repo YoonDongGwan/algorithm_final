@@ -2,104 +2,85 @@ import java.util.*;
 
 public class GeneticAlgorithm {
     public double solve(int nCandidates, double[] sortingAlgorithm, Problem p){
-        int nGenerations = 1000;
+        int nGenerations = 100000;
         double[] candidatesA = new double[nCandidates];
         double[] candidatesB = new double[nCandidates];
         Random random = new Random();
 
-        double max = 0;
-        int x = 0;
+        double minimumErrorRate = 0;
+        int minimumIndex = 0;
 
         for(int i = 0; i < nCandidates; i++){
-            candidatesA[i] = random.nextInt(30); // 랜덤 4개
-            candidatesB[i] = random.nextInt(30) - 15;
+            candidatesA[i] = random.nextInt(100); // 랜덤 4개
+            candidatesB[i] = random.nextInt(100) - 50;
         }
         for(int i = 0; i < candidatesA.length; i++){
             System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
         }
-//        for(int i = 0; i < nGenerations; i++){
-              select(candidatesA, candidatesB, sortingAlgorithm, p);
-              for(int i = 0; i < candidatesA.length; i++){
-                  System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
-              }
-              crossover(candidatesA, candidatesB, sortingAlgorithm, p);
-        for(int i = 0; i < candidatesA.length; i++){
-            System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
+        for(int i = 0; i < nGenerations; i++){
+            select(candidatesA, candidatesB, sortingAlgorithm, p);
+            crossover(candidatesA, candidatesB, sortingAlgorithm, p);
+            mutate(candidatesA, candidatesB);
+//              for(int i = 0; i < candidatesA.length; i++){
+//                  System.out.println("a["+(i)+"] : "+candidatesA[i]+"  b["+(i)+"] : "+candidatesB[i]);
+//              }
         }
-//            candidatesA = mutate(candidatesA);
-//        }
 
-//        for(int i = 0; i < nCandidates; i++){
-//            double fx = p.fit(candidatesA[i]);
-//            if(max < fx){
-//                max = fx;
-//                x = i;
-//            }
-//        }
+        for(int i = 0; i < nCandidates; i++){
+            double errorRate = errorRate(candidatesA[i], candidatesB[i], sortingAlgorithm, p);
+            if(minimumErrorRate < errorRate){
+                minimumErrorRate = errorRate;
+                minimumIndex = i;
+            }
+        }
 
-        return candidatesA[x];
+        System.out.println("a : "+candidatesA[minimumIndex]+" b : "+candidatesB[minimumIndex]);
+
+        return candidatesA[minimumIndex];
     }
 
     private void select(double[] candidatesA, double[] candidatesB, double[] sortingAlgorithm, Problem p) {
-        int n = candidatesA.length;
-        int sort_length = sortingAlgorithm.length;
-        double[] res = new double[sort_length];
-        double[] error = new double[sort_length];
-        double[] errorRate = new double[n];
+        int n = candidatesA.length; // 후보해 집합의 길이
+        double[] errorRate = new double[n]; // 에러율을 담을 배열
         Random random = new Random();
         double errorRateSum = 0;
         int[] probability = new int[n];
 
         for(int i = 0; i < n; i++){
             System.out.println("a : "+candidatesA[i]+" b : "+candidatesB[i]);
-            for(int j = 5; j < sort_length; j++){
-                res[j] = p.fit(j, candidatesA[i], candidatesB[i]);
 
-                error[j] = Math.abs(sortingAlgorithm[j] - res[j]);
-
-//                System.out.println("res["+j+"] : "+res[j]);
-//                System.out.println("error["+j+"] : "+error[j]);
-
-
-            }
-            double errorSum = 0;
-
-            for(int k = 5; k < sort_length; k++){
-                errorSum += error[k];
-            }
-            errorRate[i] = errorSum / 15;
+            errorRate[i] = errorRate(candidatesA[i], candidatesB[i], sortingAlgorithm, p); // 선택된 후보해 a, b와 그에 따른 에러율
             System.out.println("Error rate : "+errorRate[i]);
-            errorRateSum += errorRate[i];
+
+            errorRateSum += errorRate[i]; // 각 에러율에 비율의 따라 가중치를 두어 선택하기 위해, 에러율을 모두 더함.
         }
-        System.out.println(errorRateSum);
+
 
         probability[0] = (int)((errorRate[0] / errorRateSum) * 100);
-        System.out.println("probability "+ (1) + " : "+ probability[0]);
         for(int i = 1; i < n; i++){
-            probability[i] = (int)((errorRate[i] / errorRateSum) * 100) + probability[i-1];
-            System.out.println("probability "+ (i+1) + " : "+ probability[i]);
+            probability[i] = (int)((errorRate[i] / errorRateSum) * 100) + probability[i-1]; // 에러율에 따라 확률 분포를 나누었다.
         }
 
-
+        // 에러율이 작은 순서대로 선택 확률이 높아야 하기 때문에, 여기서 probability는 선택되지 않을 확률로 계산하였다.
         for(int i = 0; i < n; i++){
             HashSet<Integer> set = new HashSet<>();
-            while(set.size() < 3) {
-                int x = random.nextInt(probability[n - 1]);
+            while(set.size() < 3) { // 해쉬셋에 선택하지 않을 후보해 3개를 담는다.
+                int x = random.nextInt(probability[n - 1]); // 누적 확률에 따라 probability[n-1]은 100에 근접한 수가 되었을 것이다. 따라서 랜덤 변수의 최댓값을 그에 맞춰 설정해준다.
                 for(int j = 0; j < n; j++){
-                    if(x <= probability[j]){
+                    if(x <= probability[j]){    // 랜덤 변수의 값이 probability[j]보다 크면 다음 인덱스로, 작거나 같으면 현재 인덱스의 값을 해쉬셋에 담는다.
                         set.add(j);
                         break;
                     }
                 }
             }
 
-            for(int j = 0; j < set.size(); j++){
+            for(int j = 0; j < set.size(); j++){ // 해쉬셋에 담기지 않은 1개의 후보해가 선택될 것이다.
                 if(!set.contains(j)){
                     candidatesA[i] = candidatesA[j];
                     candidatesB[i] = candidatesB[j];
                 }
             }
-        }
+        } // 이 과정을 총 4번 반복하개 된다.
 
     }
 
@@ -115,76 +96,62 @@ public class GeneticAlgorithm {
             double b1 = candidatesB[i];
             double b2 = candidatesB[i+1];
 
+            // 배열에서 a, b 원소를 각각 2개씩 뽑아 에러율을 계산하였다.
             double errorRate1 = errorRate(a1, b1, sortingAlgorithm, p);
             double errorRate2 = errorRate(a2, b2, sortingAlgorithm, p);
 
-
-            if(errorRate1 > errorRate2) {
-                if(a1 > a2){ // 1/ 10
-                    candidatesA[i] = (int)((a1 + a2) / 2) - 1;
-                    candidatesA[i+1] = (int)((a1 + a2) / 2);
-                }
-                else{ // 10 1
-                    candidatesA[i] = (int)((a1 + a2) / 2) + 1;
-                    candidatesA[i+1] = (int)((a1 + a2) / 2);
-                }
-                if(b1 > b2) {
-                    candidatesB[i] = (int)((b1 + b2) / 2) - 1;
-                    candidatesB[i+1] = (int)((b1 + b2) / 2);
-                }
-                else{
-                    candidatesB[i] = (int)((b1 + b2) / 2) + 1;
-                    candidatesB[i+1] = (int)((b1 + b2) / 2);
-                }
+            // 에러율에 따라 교차 연산의 수행결과를 바꿔주기로 하였다.
+            if(errorRate1 > errorRate2) { // 에러율이 2가 더 낮다는 것은 a2, b2 값이 더 최적해에 가깝다는 의미이다.
+                candidatesA[i] = a2;
+                candidatesA[i+1] = (a1+a2) / 2;
+                candidatesB[i] = b2;
+                candidatesB[i+1] = (b1+b2) / 2;
             }
-            else{
-                if(a1 > a2){ // 1/ 10
-                    candidatesA[i] = (int)((a1 + a2) / 2) + 1;
-                    candidatesA[i+1] = (int)((a1 + a2) / 2);
-                }
-                else{ // 10 1
-                    candidatesA[i] = (a1 + a2) / 2 - 1;
-                    candidatesA[i+1] = (int)((a1 + a2) / 2);
-                }
-                if(b1 > b2) {
-                    candidatesB[i] = (b1 + b2) / 2 + 1;
-                    candidatesB[i+1] = (int)((b1 + b2) / 2);
-                }
-                else{
-                    candidatesB[i] = (b1 + b2) / 2 - 1;
-                    candidatesB[i+1] = (int)((b1 + b2) / 2);
+            else{ // errorRate1 <= errorRate2 이 경우 a1, b1 이 더 최적해에 가깝다는 의미이다.
+                candidatesA[i] = a1;
+                candidatesA[i+1] = (a1+a2) / 2;
+                candidatesB[i] = b1;
+                candidatesB[i+1] = (b1+b2) / 2;
+            }
+        }
+    }
+
+
+
+    private void mutate(double[] candidatesA, double[] candidatesB) {
+        for(int i = 0; i < candidatesA.length; i++) {
+            if((int)(Math.random() * 100) < 1) {
+                switch((int)(Math.random() * 4)){
+                    case 0:
+                        candidatesA[i] += 1;
+                        break;
+                    case 1:
+                        if(candidatesA[i] - 1 > 0) {
+                            candidatesA[i] -= 1;
+                        }
+                        break;
+                    case 2:
+                        candidatesB[i] += 1;
+                        break;
+                    case 3:
+                        candidatesB[i] -= 1;
+                        break;
                 }
             }
         }
 
     }
-//
-//
-//
-//    private double[] mutate(double[] candidates) {
-//        for(int i = 0; i < candidates.length; i++) {
-//            if((int)(Math.random() * 100) < 5) {
-//                if((int) (Math.random() * 2) == 0){
-//                    candidates[i] += 1;
-//                }
-//                else{
-//                    candidates[i] -= 1;
-//                }
-//            }
-//        }
-//        return candidates;
-//    }
+    // 후보해로 선정된 a와 b를 ax + b 식에 대입해 에러율을 구하는 함수
     private double errorRate(double candidatesA, double candidatesB, double[] sortingAlgorithm, Problem p){
-        int sort_length = sortingAlgorithm.length;
-        double[] res = new double[sort_length];
-        double errorSum = 0;
+        int sort_length = sortingAlgorithm.length; // 입력된 정렬 알고리즘의 배열 길이
+        double errorSum = 0; // 에러 값을 더할 변수
 
-        for(int i = 5; i < sort_length; i++) {
-            res[i] = p.fit(i, candidatesA, candidatesB);
-            errorSum += Math.abs(sortingAlgorithm[i] - res[i]);
+        for(int i = 0; i < sort_length; i++) {
+            double result = p.fit(i, candidatesA, candidatesB);
+            errorSum += Math.abs(sortingAlgorithm[i] - result); // 정렬 알고리즘의 i번째 결과와 ax+b의 결과를 서로 빼 절대값 연산을 취하여 에러 값의 합을 산출하였다.
         }
 
-        return errorSum / 15;
+        return errorSum / sort_length; // 총 더해진 에러 값의 평균을 구하면, 선택된 a, b의 에러율이 나오게 된다.
     }
 
 
