@@ -233,3 +233,21 @@ _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이
 
 
 n * 10000번째 세대마다 평균 에러율을 확인해보았고, 세대가 거듭될 수록 에러율이 확실히 감소하고 있음을 볼 수 있었다.
+
+아래의 정렬 알고리즘에도 같은 방식의 유전 알고리즘을 적용하였고, 그 결과 도출된 회귀식은 아래와 같다.
+
+### Selection Sort
+<img width="341" alt="스크린샷 2022-06-16 오후 5 38 20" src="https://user-images.githubusercontent.com/39906922/174029698-0d7fe1d6-17ac-42bb-aa1b-ae159ec12bd2.png">
+  
+### Insertion Sort
+<img width="384" alt="스크린샷 2022-06-16 오후 5 43 24" src="https://user-images.githubusercontent.com/39906922/174030745-1ce6bfab-3699-4da9-9f68-bf03f1efb0a3.png">
+
+### Shell Sort
+<img width="384" alt="스크린샷 2022-06-16 오후 5 49 48" src="https://user-images.githubusercontent.com/39906922/174031970-db5e69c5-f34b-4dfc-9779-f116536b4171.png">
+
+### Heap Sort
+<img width="384" alt="스크린샷 2022-06-16 오후 5 56 00" src="https://user-images.githubusercontent.com/39906922/174033180-bebe7dec-a1c8-43ec-ace4-342e6c03a5fd.png">
+
+### Quick Sort
+<img width="384" alt="스크린샷 2022-06-16 오후 6 00 11" src="https://user-images.githubusercontent.com/39906922/174034051-f53f6580-8605-40f5-8db5-e1e3e43d2d42.png">
+
