@@ -202,6 +202,8 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
     }
 ```
+돌연변이는 a 또는 b 중 하나의 원소만 +1 혹은 -1 연산이 이루어지도록 정하였다.
+
 돌연변이 연산에 중요한 점은, 돌연변이가 얼마나 자주 혹은 가끔 생성되는가이다. 
 
 돌연변이 확률이 100% 라면, 모든 후보해에 돌연변이가 일어나게 되어, 임의의 후보해가 탄생하게 된다. 
@@ -219,7 +221,6 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
 _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
 
-돌연변이는 a 또는 b 중 하나의 원소만 +1 혹은 -1 연산이 이루어지도록 하였다.
 
 ---
 ### 최종적인 solve 함수
