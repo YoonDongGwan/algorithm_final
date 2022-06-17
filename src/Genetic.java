@@ -10,8 +10,8 @@ public class Genetic {
         double[] quick = {0, -1.1, -1.0, -0.9, -0.8, -0.7, -0.4, -0.0, 0.2, 0.1, 0.3, 0.7, 1.5, 2.5, 3.4, 4.0, 5.5, 6.2, 6.9, 7.4, 7.4};
 
         //for(int i = 0; i < 5; i++) {
-        System.out.println("Quick Sort 회귀식 : y = 0.5029x - 3.212\n" );
-            double[] opt = ga.solve(4, quick, (x, a, b) -> a * x + b);
+        System.out.println("Bubble Sort 회귀식 : y = 1.4843x - 11.266\n" );
+            double[] opt = ga.solve(4, bubble, (x, a, b) -> a * x + b);
             System.out.println();
         //}
     }
