@@ -256,7 +256,13 @@ public double[] solve(int nCandidates, double[] sortingAlgorithm, Problem p){
         return opt;
     }
 ```
+총 100,000 번의 세대를 거치며, 마지막 100,000번째 세대의 후보해 중, 에러율이 가장 낮은 해를 return 한다.
 
+참고로 초기 배열에 넣을 a와 b를 정할 때엔, 랜덤한 변수를 넣기로 하였다.
+
+알고리즘의 그래프가 모두 우상향하는 그래프이기 때문에, 회귀식의 기울기가 음수가 되는 경우는 없을 것이라 보았고, y절편은 양수, 음수 모두 될 수도 있기 때문에, 
+
+a의 범위는 0 ~ 100, b의 범위는 -50 ~ 50 으로 설정하였다.
 
 ## 결과  
 <img width="285" alt="스크린샷 2022-06-16 오후 4 56 26" src="https://user-images.githubusercontent.com/39906922/174021495-e5bb82d1-80c8-4eab-8d31-e7a9e1efcd8d.png">
