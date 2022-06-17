@@ -219,6 +219,8 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
 _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
 
+돌연변이는 a 또는 b 중 하나의 원소만 +1 혹은 -1 연산이 이루어지도록 하였다.
+
 ---
 ### 최종적인 solve 함수
 ```
