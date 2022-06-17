@@ -45,6 +45,7 @@
 ```
 double[] bubble = {0, -8.0, -6.3, -6.1, -5.8, -5.0, -2.8, -0.8, 1.3, 2.6, 3.1, 3.3, 4.2, 5.7, 7.6, 10.2, 12.7, 14.5, 16.6, 18.6, 20.6};
 ```
+여기서 bubble[i] 는, 2의 i제곱의 랜덤 입력이 주어질 때, 정렬에 소요되는 시간(ms)에 Log2를 취한 값이다.
 
 ---
 ### 그 후 ax + b 형태의 방정식을 나타내기 위해, Problem 인터페이스를 생성하였다.
@@ -53,6 +54,8 @@ public interface Problem {
     double fit(double x, double a, double b);
 }
 ```
+이후 메인 함수에선 (x, a, b) -> a * x + b 의 형태로 return 해주었다.
+
 ---
 
 ### 선택한 후보해 a와 b를 대입해 에러율을 구하는 함수를 구현하였다.
@@ -216,6 +219,7 @@ private void mutate(double[] candidatesA, double[] candidatesB) {
 
 _돌연변이 확률이 낮을 수록 평균 에러율이 감소하는 경향이다._
 
+---
 ### 최종적인 solve 함수
 ```
 public double[] solve(int nCandidates, double[] sortingAlgorithm, Problem p){
